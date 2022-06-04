@@ -1,4 +1,5 @@
 // import {React.useState} from 'react';
+// import 'fetch'
 
 function Form(){
   // const [selectedFile, setSelectedFile] = React.useState(null);
@@ -27,27 +28,28 @@ function Form(){
     //   console.log(isiFile)
     //   console.log(e.target.result)
       // Tunggu Backend dulu
-      const endpoint = 'localhost:3000/api/getGraph';
+      const endpoint = 'http://localhost:3000/api/getGraph';
 
-      const response = await fetch(endpoint, {
+      fetch(endpoint, {
+          crossDomain:true,
           method: 'POST',
           body: JSON.stringify({isiTxt: isiFile}),
           headers: {
               'Content-Type': 'application/json'
-          }
-      });
-
-    //   const result = await response.json();
-      if (!result["error"]){
-          setMessange("Berhasil submit!");
-          setIsLoading(false);
-          setResStatus("success");
-      } else {
-          setMessange("Gagal submit!");
-          setIsLoading(false);
-          setResStatus("gagal");
-      }
-      console.log(result);
+          },
+          mode: 'cors'
+      }).then(response => {
+        if (response.headers.get('content-type').match("application/json")) {
+            return response.json();
+        }
+        })
+        .then(json => {
+            console.log(json);
+            return json;
+        })
+        .catch(error => {
+            console.log(error)
+        })
   }
 
   return(
