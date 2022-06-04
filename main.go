@@ -25,7 +25,7 @@ func main() {
 		})
 	}
 	// Route untuk web hanya ada dua, retrieve txt dan hitung dijkstra
-	api.GET("/getGraph", getGraphHandler)
+	api.POST("/getGraph", getGraphHandler)
 	api.POST("/countDijkstra", countDijkstraHandler)
 
 	dijkstra()
