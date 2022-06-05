@@ -76,3 +76,8 @@ Kompleksitas hanya untuk benchmark ya
 - Jika ada pertanyaan, silahkan LINE ke `@daffa_ananda`
 - Perubahan spesifikasi dapat terjadi sewaktu-waktu dan akan diumumkan di grup LINE
 - Spesifikasi wajib harus selesai sebelum spesifikasi bonus dikerjakan
+
+
+## How To Run
+./run.bat
+go run .
