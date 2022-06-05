@@ -88,8 +88,9 @@ func getGraphHandler(c *gin.Context) {
 	// }
 	fmt.Print(info.Isi)
 	c.JSON(http.StatusOK, gin.H{
-		"jmlNode":  jmlNode,
-		"namaNode": namaNode,
+		"jmlNode":       jmlNode,
+		"namaNode":      namaNode,
+		"relasiMatriks": relasiMatriks,
 	})
 }
 

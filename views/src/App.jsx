@@ -1,8 +1,23 @@
-// import {React.useState} from 'react';
+import {useState} from 'react';
 // import "./network.css"
 import Graph from "react-graph-vis";
 import React from 'react';
 
+const options = {
+    layout: {
+      hierarchical: false
+    },
+    edges: {
+      color: "#000000"
+    }
+  };
+  
+  function randomColor() {
+    const red = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+    const green = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+    const blue = Math.floor(Math.random() * 256).toString(16).padStart(2, '0');
+    return `#${red}${green}${blue}`;
+  }
 
 function Form(){
   // const [selectedFile, setSelectedFile] = React.useState(null);
@@ -11,6 +26,8 @@ function Form(){
   const [resStatus, setResStatus] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
   const [namaNode, setNamaNode] = React.useState("");
+  const [jmlNode, setJmlNode] = React.useState(0);
+  const [relasiMatriks, setRelasiMatriks] = React.useState([]);
   const [initial, setInitial] = React.useState("");
   const [destination, setDestination] = React.useState("");
   
@@ -60,13 +77,72 @@ function Form(){
         .then(json => {
             console.log(json);
             setNamaNode(json.namaNode);
+            setJmlNode(json.jmlNode);
+            setRelasiMatriks(json.relasiMatriks);
             return json;
         })
         .catch(error => {
             console.log(error)
         })
+        createNode();
     }
     
+    
+    // BAGIAN GRAPH
+    const createNode = (x, y) => {
+        Object.keys(namaNode).map((nama, id) => {
+            const color = randomColor();
+            setGraphState(({ graph: { nodes, edges }, counter, ...rest }) => {
+            
+            for (let i = 0; i < jmlNode; i++) {
+                for (let j = 0; j < jmlNode; j++) {
+                    if (relasiMatriks[i][j] >= 0) {
+                        edges.push({
+                            from: i,
+                            to: j,
+                            label: toString(relasiMatriks[i][j]),
+                            color: randomColor()
+                        });
+                    }
+                }
+            }
+                return {
+                    graph: {
+                    nodes: [
+                        ...nodes,
+                        { id, label: nama, color, x, y }
+                    ],
+                    edges: [
+                        ...edges,
+                        
+                    ]
+                    },
+                    counter: jmlNode,
+                    ...rest
+                }
+            });
+        })
+      }
+
+      const [graphState, setGraphState] = useState({
+        counter: jmlNode,
+        graph: {
+          nodes: [],
+          edges: [
+          ]
+        },
+        events: {
+          select: ({ nodes, edges }) => {
+            console.log("Selected nodes:");
+            console.log(nodes);
+            console.log("Selected edges:");
+            console.log(edges);
+            alert("Selected node: " + nodes);
+          },
+        }
+      })
+
+      const { graph, events } = graphState;
 
   return(
       <div className="flex flex-col items-center justify-center">
@@ -100,16 +176,19 @@ function Form(){
                   <div style={{margin: 10}}>
                     <select onChange={handleDestinationChange} class="block appearance-none w-2/5 bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
                         {
-                            namaNode ?
+                            namaNode ? 
                                 Object.keys(namaNode).map((nama, index) => (
                                     <option key={index}>{nama}</option>
+                                    
                                 ))
                             : <option>Node</option>
                         }
+                        {}
                     </select>
                   </div>
              </div>
           </form>
+          <Graph graph={graph} options={options} events={events} style={{ height: "640px" }} />
       </div>
   )
 }
@@ -118,7 +197,7 @@ export default function App(){
   return (
     <div style={{backgroundImage: `url("../public/bg.jpg")`}}>
       <div className='flex flex-row h-screen justify-center items-center'>
-          <div className='w-1/2 '>
+          <div className='w-3/4 '>
               <div className='text-center w-full bg-gray-100/30 border border-gray-100/20 rounded-lg'>
                   <h2 class="py-4 font-montserrat text-white" style={{fontSize: 40}}>Dijkstra Path Finding</h2>
                   <Form/>
