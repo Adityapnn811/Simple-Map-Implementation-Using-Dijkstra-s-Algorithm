@@ -97,10 +97,11 @@ function Form(){
             for (let i = 0; i < jmlNode; i++) {
                 for (let j = 0; j < jmlNode; j++) {
                     if (relasiMatriks[i][j] >= 0) {
+                        const labelEdge = relasiMatriks[i][j].toString();
                         edges.push({
                             from: i,
                             to: j,
-                            label: toString(relasiMatriks[i][j]),
+                            label: labelEdge,
                             color: randomColor()
                         });
                     }
@@ -160,7 +161,7 @@ function Form(){
                     <p className='text-left font-montserrat'>Initial</p>
                   </div>
                   <div style={{margin: 10}}>
-                    <select onChange={handleInitialChange} class="block appearance-none w-2/5 bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+                    <select onChange={handleInitialChange} class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
                         {
                             namaNode ?
                                 Object.keys(namaNode).map((nama, index) => (
@@ -174,7 +175,7 @@ function Form(){
                     <p className='text-left font-montserrat'>Destination</p>
                   </div>
                   <div style={{margin: 10}}>
-                    <select onChange={handleDestinationChange} class="block appearance-none w-2/5 bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+                    <select onChange={handleDestinationChange} class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
                         {
                             namaNode ? 
                                 Object.keys(namaNode).map((nama, index) => (
@@ -195,7 +196,7 @@ function Form(){
 
 export default function App(){
   return (
-    <div style={{backgroundImage: `url("../public/bg.jpg")`}}>
+    <div style={{backgroundImage: `url("bg.jpg")`}}>
       <div className='flex flex-row h-screen justify-center items-center'>
           <div className='w-3/4 '>
               <div className='text-center w-full bg-gray-100/30 border border-gray-100/20 rounded-lg'>
