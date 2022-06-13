@@ -22,6 +22,11 @@ type IsiTxt struct {
 	Isi string `json:"isiTxt"`
 }
 
+type infoGraph struct {
+	initial     int `json:"initial"`
+	destination int `json:"destination"`
+}
+
 func main() {
 	// Set the router as the default one shipped with Gin
 	router := gin.Default()
@@ -95,7 +100,21 @@ func getGraphHandler(c *gin.Context) {
 }
 
 func countDijkstraHandler(c *gin.Context) {
+	c.Header("Content-Type", "application/json")
+	decoder := json.NewDecoder(c.Request.Body)
+	var infoGraph infoGraph
+	// handle error
+	err := decoder.Decode(&infoGraph)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Error",
+		})
+		return
+	}
+
+	// panggil dijkstra
+	path := dijkstra(jmlNode, relasiMatriks, infoGraph.initial, infoGraph.destination)
 	c.JSON(http.StatusOK, gin.H{
-		"message": "countDijkstra",
+		"path": path,
 	})
 }

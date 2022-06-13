@@ -24,12 +24,12 @@ function Form(){
   const [isiFile, setIsiFile] = React.useState("");
   const [message, setMessange] = React.useState("");
   const [resStatus, setResStatus] = React.useState("");
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
   const [namaNode, setNamaNode] = React.useState("");
   const [jmlNode, setJmlNode] = React.useState(0);
   const [relasiMatriks, setRelasiMatriks] = React.useState([]);
-  const [initial, setInitial] = React.useState("");
-  const [destination, setDestination] = React.useState("");
+  const [initial, setInitial] = React.useState(0);
+  const [destination, setDestination] = React.useState(0);
   
 
   const handleFileChange = (e) => {
@@ -43,16 +43,15 @@ function Form(){
   }
 
     const handleInitialChange = (e) => {
-        setInitial(e.target.value);
+        setInitial(e.target.selectedIndex);
     }
 
     const handleDestinationChange = (e) => {
-        setDestination(e.target.value);
+        setDestination(e.target.selectedIndex);
     }
 
   const handleSubmit = async (e) => {
       e.preventDefault();
-      setIsLoading(true);
 
       // DEBUG ISI FILE DI SINI
     //   console.log("Isi FIle")
@@ -143,6 +142,25 @@ function Form(){
         }
       })
 
+      const handleSubmitDijkstra = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        const endpoint = 'http://localhost:3000/api/countDijkstra';
+
+        fetch(endpoint, {
+          crossDomain:true,
+          method: 'POST',
+          body: JSON.stringify({
+            initial: initial,
+            destination: destination,
+          }),
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          mode: 'cors'
+        })
+      }
+
       const { graph, events } = graphState;
 
   return(
@@ -155,7 +173,7 @@ function Form(){
               </div>
               <button class="bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg mb-4" type="submit">Submit</button>
           </form>
-          <form className='w-3/4 mb-6'>
+          <form className='w-3/4 mb-6' onSubmit={handleSubmitDijkstra}>
               <div className='flex items-center border-black space-x-5'>
                   <div style={{margin: 10}}>
                     <p className='text-left font-montserrat'>Initial</p>
@@ -188,6 +206,7 @@ function Form(){
                     </select>
                   </div>
              </div>
+             <button class="bg-cyan-500 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg mb-4" type="submit">Cari!</button>
           </form>
           <Graph graph={graph} options={options} events={events} style={{ height: "640px" }} />
       </div>
@@ -197,9 +216,9 @@ function Form(){
 export default function App(){
   return (
     <div style={{backgroundImage: `url("bg.jpg")`}}>
-      <div className='flex flex-row h-screen justify-center items-center'>
-          <div className='w-3/4 '>
-              <div className='text-center w-full bg-gray-100/30 border border-gray-100/20 rounded-lg'>
+      <div className='flex flex-row h-screen justify-center items-center' style={{overflowY: 'scroll'}}>
+          <div className='w-3/4 ' style={{overflowY: 'scroll'}}>
+              <div className='text-center w-full bg-gray-100/30 border border-gray-100/20 rounded-lg mt-15'>
                   <h2 class="py-4 font-montserrat text-white" style={{fontSize: 40}}>Dijkstra Path Finding</h2>
                   <Form/>
               </div>
