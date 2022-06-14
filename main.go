@@ -23,8 +23,8 @@ type IsiTxt struct {
 }
 
 type infoGraph struct {
-	initial     int `json:"initial"`
-	destination int `json:"destination"`
+	Initial     int `json:"initial"`
+	Destination int `json:"destination"`
 }
 
 func main() {
@@ -48,7 +48,9 @@ func main() {
 	api.POST("/getGraph", getGraphHandler)
 	api.POST("/countDijkstra", countDijkstraHandler)
 
-	// dijkstra()
+	// jarak, path := dijkstra(jmlNode, relasiMatriks, 0, 2)
+	// fmt.Println("Jarak: ", jarak)
+	// fmt.Println("Path: ", path)
 	// Start and run the server
 	router.Run("localhost:3000")
 }
@@ -99,12 +101,22 @@ func getGraphHandler(c *gin.Context) {
 	})
 }
 
+func joinPathRecurse(path [][]int, destination int) []int {
+	// basis saat len dari path[destination] = 1
+	if len(path[destination]) <= 1 {
+		return append(path[destination], destination)
+	} else {
+		return append(joinPathRecurse(path, path[destination][1]), destination)
+	}
+
+}
+
 func countDijkstraHandler(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	decoder := json.NewDecoder(c.Request.Body)
-	var infoGraph infoGraph
+	var res infoGraph
 	// handle error
-	err := decoder.Decode(&infoGraph)
+	err := decoder.Decode(&res)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Error",
@@ -113,8 +125,14 @@ func countDijkstraHandler(c *gin.Context) {
 	}
 
 	// panggil dijkstra
-	path := dijkstra(jmlNode, relasiMatriks, infoGraph.initial, infoGraph.destination)
+	jarak, path := dijkstra(jmlNode, relasiMatriks, res.Initial, res.Destination)
+	fmt.Println("Jarak: ", jarak)
+	fmt.Println("Path: ", path)
+	// Olah path sesuai dengan destination
+	jalan := joinPathRecurse(path, res.Destination)
+	fmt.Println("Jalan: ", jalan)
 	c.JSON(http.StatusOK, gin.H{
-		"path": path,
+		"jarak": jarak,
+		"path":  jalan,
 	})
 }

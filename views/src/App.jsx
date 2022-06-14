@@ -158,7 +158,9 @@ function Form(){
               'Content-Type': 'application/json'
           },
           mode: 'cors'
+          
         })
+        console.log(initial)
       }
 
       const { graph, events } = graphState;
