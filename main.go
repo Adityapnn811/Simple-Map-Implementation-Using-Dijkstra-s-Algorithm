@@ -111,6 +111,15 @@ func joinPathRecurse(path [][]int, destination int) []int {
 
 }
 
+func returnKey(m map[string]int, value int) string {
+	for k, v := range m {
+		if v == value {
+			return k
+		}
+	}
+	return ""
+}
+
 func countDijkstraHandler(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	decoder := json.NewDecoder(c.Request.Body)
@@ -130,9 +139,13 @@ func countDijkstraHandler(c *gin.Context) {
 	fmt.Println("Path: ", path)
 	// Olah path sesuai dengan destination
 	jalan := joinPathRecurse(path, res.Destination)
-	fmt.Println("Jalan: ", jalan)
+	jalanInNama := make([]string, len(jalan))
+	for i := 0; i < len(jalan); i++ {
+		jalanInNama[i] = returnKey(namaNode, jalan[i])
+	}
+	fmt.Println("Jalan: ", jalanInNama)
 	c.JSON(http.StatusOK, gin.H{
 		"jarak": jarak,
-		"path":  jalan,
+		"path":  jalanInNama,
 	})
 }
